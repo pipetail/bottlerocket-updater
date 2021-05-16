@@ -15,5 +15,5 @@ RUN \
     && apt-get install -y --no-install-suggests --no-install-recommends \
         ca-certificates
 
-COPY --from=builder /app/checker /usr/local/bin/bottlerocket-updater
+COPY --from=builder /app/updater /usr/local/bin/bottlerocket-updater
 
