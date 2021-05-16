@@ -1,0 +1,27 @@
+{
+  "update_state": "Idle",
+  "available_updates": [
+    "1.1.0",
+    "1.0.8",
+    "1.0.7",
+    "1.0.6",
+    "1.0.5"
+  ],
+  "chosen_update": null,
+  "active_partition": {
+    "image": {
+      "arch": "x86_64",
+      "version": "1.1.0",
+      "variant": "aws-k8s-1.19"
+    },
+    "next_to_boot": true
+  },
+  "staging_partition": null,
+  "most_recent_command": {
+    "cmd_type": "refresh",
+    "cmd_status": "Success",
+    "timestamp": "2021-05-15T17:20:02.832843917Z",
+    "exit_status": 0,
+    "stderr": ""
+  }
+}
