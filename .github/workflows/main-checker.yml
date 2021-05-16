@@ -1,0 +1,31 @@
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'pkg/**'
+      - 'internal/checker/**'
+      - 'images/kured/Dockerfile'
+      - '.github/workflows/main-checker.yaml'
+
+jobs:
+  build-service-backend:
+    name: build-service-backend
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - run: echo $CR_PAT | docker login ghcr.io -u vranystepan --password-stdin
+        env:
+          CR_PAT: ${{ secrets.CR_PAT }}
+      - run: |
+          docker buildx build \
+            --platform=linux/amd64 \
+            --tag=ghcr.io/pipetail/bottlerocket-updater/checker:amd64-${{ github.sha }} \
+            --file=images/kured/Dockerfile \
+            --output type=image,push=true .
+      - run: |
+          docker buildx build \
+            --platform=linux/arm64 \
+            --tag=ghcr.io/pipetail/bottlerocket-updater/checker:arm64-${{ github.sha }} \
+            --file=images/kured/Dockerfile \
+            --output type=image,push=true .
