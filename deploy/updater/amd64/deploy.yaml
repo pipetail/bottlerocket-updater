@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: updater
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      name: updater
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        name: updater
+    spec:
+      tolerations:
+        - key: node-role.kubernetes.io/master
+          effect: NoSchedule
+      restartPolicy: Always
+      volumes:
+        - name: bottlerocket
+          hostPath:
+            path: /var/run/api.sock
+      containers:
+        - name: updater
+          image: ghcr.io/pipetail/bottlerocket-updater/updater:linux-amd64-fd097dbfaadae3383f792837ddfdb94d467bf2f2
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: bottlerocket
+              mountPath: /run/api.sock
+          command:
+            - /usr/local/bin/bottlerocket-updater
