@@ -2,6 +2,9 @@
 
 [![.github/workflows/main-checker.yml](https://github.com/pipetail/bottlerocket-updater/actions/workflows/main-checker.yml/badge.svg)](https://github.com/pipetail/bottlerocket-updater/actions/workflows/main-checker.yml)
 
+**Project status:** `Experimental`, at the moment I don't know if
+if behaves as expected. Testing of such stuff is time consuming 😂
+
 Bottlerocker updater is a set of two small executables
 that help with the management of the OS updates in
 your Kubernetes cluster.
@@ -16,6 +19,10 @@ sequence of activities:
 1. `/actions/refresh-updates`
 2. `/actions/prepare-update`
 3. `/actions/activate-update`
+
+Updater also supports `one-time` mode when you can check
+the status by running `/usr/local/bin/bottlerocket-updater -one-time`
+from the updater pod.
 
 ## Checker (Kured + custom addons)
 
