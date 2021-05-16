@@ -7,7 +7,6 @@ import (
 	"testing"
 )
 
-
 //go:embed assets/idle.json
 var idleResponseString string
 

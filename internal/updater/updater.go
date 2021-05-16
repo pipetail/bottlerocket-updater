@@ -23,27 +23,8 @@ func RealMain(config Config) {
 			continue
 		}
 
-		if status.State == "Available" {
-			log.Println("preparing the update")
-			// prepare update
-			refresh(client)
-			continue
-		}
-
-		if status.State == "Staged" {
-			log.Println("activating the update")
-			// activate update
-			refresh(client)
-			continue
-		}
-
-		if status.State == "Ready" {
-			log.Printf("update already prepared")
-			refresh(client)
-			continue
-		}
-
-		log.Println("unknown state")
+		stage, stageStatus := HandleStates(client, status)
+		log.Printf("stage '%s' executed with status: %v", stage, stageStatus)
 	}
 }
 
@@ -55,4 +36,41 @@ func refresh(client bottlerocket.HTTPClient) {
 	if err != nil {
 		log.Println("could not refresh update status")
 	}
+}
+
+// HandleStates check returned Update Status and executes the required
+// action that needs to be executed afterwards
+func HandleStates(client bottlerocket.HTTPClient, status bottlerocket.UpdateStatus) (string, bool) {
+	var err error
+	var action string
+	if status.State == "Available" {
+		action = "prepare"
+		log.Println("preparing the update")
+		err = bottlerocket.PrepareUpdate(client)
+	}
+
+	if status.State == "Staged" {
+		action = "activate"
+		log.Println("activating the update")
+		err = bottlerocket.ActivateUpdate(client)
+	}
+
+	if status.State == "Ready" {
+		action = "noop_ready"
+		log.Println("update ready")
+	}
+
+	if status.State == "Idle" {
+		action = "noop_idle"
+		log.Println("update idle")
+	}
+
+	// always refresh the updates
+	refresh(client)
+	if err != nil {
+		log.Printf("there was an error during '%s' stage: %s", action, err.Error())
+		return action, false
+	}
+
+	return action, true
 }
