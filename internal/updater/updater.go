@@ -65,7 +65,7 @@ func HandleStates(client bottlerocket.HTTPClient, status bottlerocket.UpdateStat
 		log.Println("update idle")
 	}
 
-	// always refresh the updates
+	// always refresh the updates, we don' care about the refresh status
 	refresh(client)
 	if err != nil {
 		log.Printf("there was an error during '%s' stage: %s", action, err.Error())

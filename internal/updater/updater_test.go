@@ -21,7 +21,8 @@ func TestHandleStatesIdle(t *testing.T) {
 		t.Errorf("error was not expected here: %s", err.Error())
 	}
 
-	// reconfigure client for
+	// update client properties a bit
+	client.SetStatusCode(204)
 
 	stage, stageStatus := HandleStates(client, status)
 	if stage != "noop_idle" {
@@ -30,5 +31,10 @@ func TestHandleStatesIdle(t *testing.T) {
 
 	if ! stageStatus {
 		t.Errorf("successful status was expected here")
+	}
+
+	// get status and refresh = 2
+	if client.Count > 2 {
+		t.Errorf("client was used more than twice: %d", client.Count)
 	}
 }

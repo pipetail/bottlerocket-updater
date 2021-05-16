@@ -11,6 +11,7 @@ type Client struct{
 	Body io.ReadCloser
 	StatusCode int
 	Error error
+	Count int // this property is useful to determine the number of calls
 }
 
 func (c *Client) Get(url string) (resp *http.Response, err error) {
@@ -18,6 +19,7 @@ func (c *Client) Get(url string) (resp *http.Response, err error) {
 		Body: c.Body,
 		StatusCode: c.StatusCode,
 	}
+	c.Count = c.Count + 1
 	return &response, c.Error
 }
 
@@ -26,6 +28,7 @@ func (c *Client) Post(url string, contentType string, body io.Reader) (resp *htt
 		Body: c.Body,
 		StatusCode: c.StatusCode,
 	}
+	c.Count = c.Count + 1
 	return &response, c.Error
 }
 
