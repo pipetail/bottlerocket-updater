@@ -24,7 +24,7 @@ spec:
             path: /var/run/api.sock
       containers:
         - name: updater
-          image: ghcr.io/pipetail/bottlerocket-updater/updater:linux-arm64-fd097dbfaadae3383f792837ddfdb94d467bf2f2
+          image: ghcr.io/pipetail/bottlerocket-updater/updater:linux-arm64-6d94851223843d858d3530efc21cce8308cf4b06
           imagePullPolicy: IfNotPresent
           volumeMounts:
             - name: bottlerocket
