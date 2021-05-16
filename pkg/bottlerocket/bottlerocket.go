@@ -78,6 +78,42 @@ func RefreshUpdates(client HTTPClient) error {
 	return nil
 }
 
+// PrepareUpdate installs updates to the staging partition as per
+// https://github.com/bottlerocket-os/bottlerocket/blob/develop/sources/api/openapi.yaml#L340
+func PrepareUpdate(client HTTPClient) error {
+	// send the empty body
+	body := bytes.NewBuffer([]byte{})
+	res, err := client.Post("http://unix/actions/prepare-update", "", body)
+	if err != nil {
+		return fmt.Errorf("could not prepare update: %s", err.Error())
+	}
+
+	if res.StatusCode != 204 {
+		return fmt.Errorf("api returned unexpected code %d", res.StatusCode)
+	}
+
+	return nil
+}
+
+// ActivateUpdate marks the partition with the prepared update
+// as the next boot target as per
+// https://github.com/bottlerocket-os/bottlerocket/blob/develop/sources/api/openapi.yaml#L356
+func ActivateUpdate(client HTTPClient) error {
+	// send the empty body
+	body := bytes.NewBuffer([]byte{})
+	res, err := client.Post("http://unix/actions/activate-update", "", body)
+	if err != nil {
+		return fmt.Errorf("could not activate update: %s", err.Error())
+	}
+
+	if res.StatusCode != 204 {
+		return fmt.Errorf("api returned unexpected code %d", res.StatusCode)
+	}
+
+	return nil
+}
+
+
 // Reboot reboots the system as per
 // https://github.com/bottlerocket-os/bottlerocket/blob/develop/sources/api/openapi.yaml#L318
 func Reboot(client HTTPClient) error {
