@@ -2,8 +2,9 @@ FROM golang:1.16.4-buster AS builder
 
 ENV CGO_ENABLED=0
 
-# download kured 1.6.1
-RUN go install github.com/weaveworks/kured/cmd/kured@56e2c12
+# download kured from commit 42e4c31 since this commit
+# supports guard command
+RUN go install github.com/weaveworks/kured/cmd/kured@42e4c31
 
 # build checker
 WORKDIR /app
