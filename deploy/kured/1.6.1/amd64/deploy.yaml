@@ -99,7 +99,7 @@ spec:
             claimName: bottlerocket-bin
       initContainers:
         - name: install
-          image: ghcr.io/pipetail/bottlerocket-updater/checker:linux-amd64-42dea41c6366b43398aeb52e9344a21edf8b7c72
+          image: ghcr.io/pipetail/bottlerocket-updater/checker:linux-amd64-290643579b61c65824ff545a464af4da97f4904f
           volumeMounts:
             - mountPath: /bottlerocket/
               name: bottlerocket-usr-bin
@@ -115,7 +115,7 @@ spec:
               ls -lah ./
       containers:
         - name: kured
-          image: ghcr.io/pipetail/bottlerocket-updater/checker:linux-amd64-42dea41c6366b43398aeb52e9344a21edf8b7c72
+          image: ghcr.io/pipetail/bottlerocket-updater/checker:linux-amd64-290643579b61c65824ff545a464af4da97f4904f
           imagePullPolicy: IfNotPresent
           securityContext:
             privileged: true # Give permission to nsenter /proc/1/ns/mnt
