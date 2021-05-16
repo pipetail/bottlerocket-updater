@@ -4,6 +4,7 @@ import (
 	"github.com/pipetail/bottlerocket-updater/internal/common"
 	"github.com/pipetail/bottlerocket-updater/pkg/bottlerocket"
 	"log"
+	"os"
 	"time"
 )
 
@@ -11,7 +12,24 @@ type Config struct {
 	SocketPath string
 }
 
+func OneTime(config Config) {
+	log.Println("updater started in one-time mode")
+
+	client := common.GetHTTPClient(config.SocketPath)
+	status, err := bottlerocket.GetUpdatesStatus(client)
+	if err != nil {
+		log.Printf("could not get status: %s", err.Error())
+		refresh(client)
+		os.Exit(1)
+	}
+
+	stage, stageStatus := HandleStates(client, status)
+	log.Printf("stage '%s' executed with status: %v", stage, stageStatus)
+}
+
 func RealMain(config Config) {
+	log.Println("updater started")
+
 	// prepare HTTP client with the special UDS configuration
 	client := common.GetHTTPClient(config.SocketPath)
 

@@ -26,6 +26,8 @@ spec:
         - name: updater
           image: ghcr.io/pipetail/bottlerocket-updater/updater:linux-amd64-fd097dbfaadae3383f792837ddfdb94d467bf2f2
           imagePullPolicy: IfNotPresent
+          securityContext:
+            privileged: true
           volumeMounts:
             - name: bottlerocket
               mountPath: /run/api.sock
