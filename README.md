@@ -17,7 +17,7 @@ sequence of activities:
 2. `/actions/prepare-update`
 3. `/actions/activate-update`
 
-## Checker
+## Checker (Kured + custom addons)
 
 Checker is part that needs to be integrated to
 [Kured](https://github.com/weaveworks/kured)
@@ -35,24 +35,82 @@ and it exits successfully when `update_state` is `Ready`.
 Kured's DaemonSet manifest needs to altered this way:
 
 ```yaml
-      volumes:
+volumes:
+  - name: bottlerocket
+    hostPath:
+      path: /var/run/api.sock
+  - name: bottlerocket-usr-bin
+    persistentVolumeClaim:
+      claimName: bottlerocket-bin
+  initContainers:
+    - name: install
+      image: ghcr.io/pipetail/bottlerocket-updater/checker:linux-amd64-290643579b61c65824ff545a464af4da97f4904f
+      volumeMounts:
+        - mountPath: /bottlerocket/
+          name: bottlerocket-usr-bin
+      command:
+        - /bin/bash
+        - -c
+        - |
+          set -Eeuo pipefail
+          mkdir -p /bottlerocket/bottlerocket
+          cd /bottlerocket/bottlerocket
+          cp /usr/local/bin/bottlerocket-checker ./
+          cp /usr/local/bin/bottlerocket-reboot ./
+          ls -lah ./
+  containers:
+    - name: kured
+      image: ghcr.io/pipetail/bottlerocket-updater/checker:linux-amd64-290643579b61c65824ff545a464af4da97f4904f
+      imagePullPolicy: IfNotPresent
+      securityContext:
+        privileged: true # Give permission to nsenter /proc/1/ns/mnt
+      volumeMounts:
         - name: bottlerocket
-          hostPath:
-            path: /var/run/api.sock
-      containers:
-        - name: kured
-          image: docker.io/weaveworks/kured:1.6.1
-                 # If you find yourself here wondering why there is no
-                 # :latest tag on Docker Hub,see the FAQ in the README
-          imagePullPolicy: IfNotPresent
-          securityContext:
-            privileged: true # Give permission to nsenter /proc/1/ns/mnt
-          volumeMounts:
-            - name: bottlerocket
-              mountPath: /var/run/bottlerocket.sock 
+          mountPath: /var/run/bottlerocket.sock
+```
+
+and
+
+```yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  labels:
+    type: local
+  name: bottlerocket-bin
+  namespace: kube-system
+spec:
+  accessModes:
+    - ReadWriteOnce
+  capacity:
+    storage: 2Gi
+  hostPath:
+    path: /opt/
+    type: Directory
+  storageClassName: manual
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: bottlerocket-bin
+  namespace: kube-system
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: manual
 ```
 
 ## Storage class
+
+Kured operates with nsenter directly in the host operating
+system. Hence InitContainer needs to copy check and reboot
+binaries to the host filesystem.
+
+This procedure is done via `manual` Storage Class that
+allows access to host's filesystem.
 
 ```yaml
 apiVersion: storage.k8s.io/v1
