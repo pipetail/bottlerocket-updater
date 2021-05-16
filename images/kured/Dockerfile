@@ -12,6 +12,7 @@ COPY go.mod ./
 RUN go mod download
 COPY . .
 RUN go build -o checker cmd/checker/main.go
+RUN go build -o reboot cmd/reboot/main.go
 
 FROM debian:buster-20210511-slim
 RUN \
@@ -21,3 +22,4 @@ RUN \
 
 COPY --from=builder /go/bin/kured /usr/local/bin/kured
 COPY --from=builder /app/checker /usr/local/bin/bottlerocket-checker
+COPY --from=builder /app/reboot /usr/local/bin/bottlerocket-reboot

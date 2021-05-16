@@ -96,7 +96,7 @@ spec:
             path: /var/run/api.sock
       containers:
         - name: kured
-          image: ghcr.io/pipetail/bottlerocket-updater/checker:linux-arm64-23496f7ec9ee33d2f048f79a1174ae800bb7838a
+          image: ghcr.io/pipetail/bottlerocket-updater/checker:linux-amd64-91831607a56674ed887df196723777e1a0bbeddb
           imagePullPolicy: IfNotPresent
           securityContext:
             privileged: true # Give permission to nsenter /proc/1/ns/mnt
@@ -113,6 +113,7 @@ spec:
           command:
             - /usr/local/bin/kured
             - --reboot-sentinel-command=/usr/local/bin/bottlerocket-checker
+            - --reboot-command=/usr/local/bin/bottlerocket-reboot
 #            - --alert-filter-regexp=^RebootRequired$
 #            - --blocking-pod-selector=runtime=long,cost=expensive
 #            - --blocking-pod-selector=name=temperamental

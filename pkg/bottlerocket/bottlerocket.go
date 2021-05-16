@@ -78,4 +78,21 @@ func RefreshUpdates(client HTTPClient) error {
 	return nil
 }
 
+// Reboot reboots the system as per
+// https://github.com/bottlerocket-os/bottlerocket/blob/develop/sources/api/openapi.yaml#L318
+func Reboot(client HTTPClient) error {
+	// send the empty body
+	body := bytes.NewBuffer([]byte{})
+	res, err := client.Post("http://unix/actions/reboot", "", body)
+	if err != nil {
+		return fmt.Errorf("could not reboot: %s", err.Error())
+	}
+
+	if res.StatusCode != 204 {
+		return fmt.Errorf("api returned unexpected code %d", res.StatusCode)
+	}
+
+	return nil
+}
+
 
