@@ -10,7 +10,7 @@ var oneTime *bool
 
 func init() {
 	socketPath = flag.String("socket", "/run/api.sock", "path to bottlerocket socket")
-	oneTime = flag.Bool("one-tine", false, "operation mode of the application")
+	oneTime = flag.Bool("one-time", false, "operation mode of the application")
 	flag.Parse()
 }
 
