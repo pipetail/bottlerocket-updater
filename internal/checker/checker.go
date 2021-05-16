@@ -32,7 +32,7 @@ func RealMain(config Config) {
 
 	log.Printf("irelevant update status '%s'", status.State)
 	refresh(client) // always issue the refresh command
-	os.Exit(1) // if not 'Ready' we can't exit with 0 since it would cause reboot
+	os.Exit(1)      // if not 'Ready' we can't exit with 0 since it would cause reboot
 }
 
 // refresh issues the refresh requests to the bottlerocket api

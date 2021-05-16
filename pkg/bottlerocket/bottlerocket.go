@@ -11,24 +11,24 @@ import (
 // Image contains details about the image staged in the primary or
 // staging partition
 type Image struct {
-	Arch string `json:"arch"`
+	Arch    string `json:"arch"`
 	Version string `json:"version"`
 	Variant string `json:"variant"`
 }
 
 // Partition contains information about the primary or staging partition
 type Partition struct {
-	Image Image `json:"image"`
-	NextToBoot bool `json:"next_to_boot"`
+	Image      Image `json:"image"`
+	NextToBoot bool  `json:"next_to_boot"`
 }
 
 // UpdateStatus contains all information as reference in the
 // official documentation https://github.com/bottlerocket-os/bottlerocket/blob/develop/sources/api/openapi.yaml
 type UpdateStatus struct {
-	State string `json:"update_state"`
-	AvailableUpdates []string `json:"available_updates"`
-	ChosenUpdate Image `json:"chosen_update"`
-	ActivePartition Partition `json:"active_partition"`
+	State            string    `json:"update_state"`
+	AvailableUpdates []string  `json:"available_updates"`
+	ChosenUpdate     Image     `json:"chosen_update"`
+	ActivePartition  Partition `json:"active_partition"`
 	StagingPartition Partition `json:"staging_partition"`
 }
 
@@ -113,7 +113,6 @@ func ActivateUpdate(client HTTPClient) error {
 	return nil
 }
 
-
 // Reboot reboots the system as per
 // https://github.com/bottlerocket-os/bottlerocket/blob/develop/sources/api/openapi.yaml#L318
 func Reboot(client HTTPClient) error {
@@ -130,5 +129,3 @@ func Reboot(client HTTPClient) error {
 
 	return nil
 }
-
-
