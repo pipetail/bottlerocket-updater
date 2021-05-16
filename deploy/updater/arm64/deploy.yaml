@@ -21,11 +21,21 @@ spec:
       volumes:
         - name: bottlerocket
           hostPath:
-            path: /var/run/api.sock
+            path: /run/api.sock
+            type: Socket
+      hostPID: true
       containers:
         - name: updater
           image: ghcr.io/pipetail/bottlerocket-updater/updater:linux-arm64-6d94851223843d858d3530efc21cce8308cf4b06
           imagePullPolicy: IfNotPresent
+          securityContext:
+            privileged: true
+            # https://github.com/bottlerocket-os/bottlerocket-update-operator/blob/develop/update-operator.yaml#L194
+            seLinuxOptions:
+              user: system_u
+              role: system_r
+              type: super_t
+              level: s0
           volumeMounts:
             - name: bottlerocket
               mountPath: /run/api.sock
