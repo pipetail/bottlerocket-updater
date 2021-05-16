@@ -120,3 +120,23 @@ metadata:
 provisioner: kubernetes.io/no-provisioner
 volumeBindingMode: WaitForFirstConsumer
 ```
+
+## Testing the commands
+
+1) exec to the kured container
+
+    ```bash
+    kubectl exec -it -n kube-system kured-45jml -- bash
+    ```
+
+2) check the status of updates
+
+    ```bash
+    nsenter -m/proc/1/ns/mnt -- /opt/bottlerocket/bottlerocket-checker
+    ```
+
+3) or reset the host
+
+    ```bash
+    nsenter -m/proc/1/ns/mnt -- /opt/bottlerocket/bottlerocket-reboot
+    ```
