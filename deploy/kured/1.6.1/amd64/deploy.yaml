@@ -96,9 +96,7 @@ spec:
             path: /var/run/api.sock
       containers:
         - name: kured
-          image: docker.io/weaveworks/kured:1.6.1
-                 # If you find yourself here wondering why there is no
-                 # :latest tag on Docker Hub,see the FAQ in the README
+          image: ghcr.io/pipetail/bottlerocket-updater/checker:linux-amd64-23496f7ec9ee33d2f048f79a1174ae800bb7838a
           imagePullPolicy: IfNotPresent
           securityContext:
             privileged: true # Give permission to nsenter /proc/1/ns/mnt
@@ -113,8 +111,8 @@ spec:
                 fieldRef:
                   fieldPath: spec.nodeName
           command:
-            - /usr/bin/kured
-            - --reboot-sentinel-command=bottlerocket-checker
+            - /usr/local/bin/kured
+            - --reboot-sentinel-command=/usr/local/bin/bottlerocket-checker
 #            - --alert-filter-regexp=^RebootRequired$
 #            - --blocking-pod-selector=runtime=long,cost=expensive
 #            - --blocking-pod-selector=name=temperamental

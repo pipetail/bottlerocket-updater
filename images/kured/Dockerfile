@@ -2,16 +2,15 @@ FROM golang:1.16.4-buster AS builder
 
 ENV CGO_ENABLED=0
 
-WORKDIR /app
+# download kured 1.6.1
+RUN go install github.com/weaveworks/kured/cmd/kured@56e2c12
 
 # build checker
-COPY go.mod go.sum ./
+WORKDIR /app
+COPY go.mod ./
 RUN go mod download
 COPY . .
 RUN go build -o checker cmd/checker/main.go
-
-# download kured 1.6.1
-RUN go install github.com/weaveworks/kured/cmd/kured@56e2c12
 
 FROM debian:buster-20210511-slim
 RUN \
