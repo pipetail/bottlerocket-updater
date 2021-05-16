@@ -96,7 +96,7 @@ spec:
             path: /var/run/api.sock
       containers:
         - name: kured
-          image: ghcr.io/pipetail/bottlerocket-updater/checker:linux-amd64-91831607a56674ed887df196723777e1a0bbeddb
+          image: ghcr.io/pipetail/bottlerocket-updater/checker:linux-arm64-42dea41c6366b43398aeb52e9344a21edf8b7c72
           imagePullPolicy: IfNotPresent
           securityContext:
             privileged: true # Give permission to nsenter /proc/1/ns/mnt
