@@ -58,6 +58,10 @@ func refresh(client bottlerocket.HTTPClient) {
 
 // HandleStates check returned Update Status and executes the required
 // action that needs to be executed afterwards
+// prepare - /actions/prepare-update has been called
+// activate - /actions/activate-update has bee called
+// noop_ready - status is Ready and no further action was called
+// loop_idly - status is Idle and no further action was called
 func HandleStates(client bottlerocket.HTTPClient, status bottlerocket.UpdateStatus) (string, bool) {
 	var err error
 	var action string
