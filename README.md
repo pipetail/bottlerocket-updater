@@ -52,3 +52,13 @@ Kured's DaemonSet manifest needs to altered this way:
               mountPath: /var/run/bottlerocket.sock 
 ```
 
+## Storage class
+
+```yaml
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: manual
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+```

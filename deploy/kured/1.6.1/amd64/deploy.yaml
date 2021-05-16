@@ -94,6 +94,25 @@ spec:
         - name: bottlerocket
           hostPath:
             path: /var/run/api.sock
+        - name: bottlerocket-usr-bin
+          persistentVolumeClaim:
+            claimName: bottlerocket-bin
+      initContainers:
+        - name: install
+          image: ghcr.io/pipetail/bottlerocket-updater/checker:linux-amd64-42dea41c6366b43398aeb52e9344a21edf8b7c72
+          volumeMounts:
+            - mountPath: /bottlerocket/
+              name: bottlerocket-usr-bin
+          command:
+            - /bin/bash
+            - -c
+            - |
+              set -Eeuo pipefail
+              mkdir -p /bottlerocket/bottlerocket
+              cd /bottlerocket/bottlerocket
+              cp /usr/local/bin/bottlerocket-checker ./
+              cp /usr/local/bin/bottlerocket-reboot ./
+              ls -lah ./
       containers:
         - name: kured
           image: ghcr.io/pipetail/bottlerocket-updater/checker:linux-amd64-42dea41c6366b43398aeb52e9344a21edf8b7c72
@@ -112,8 +131,8 @@ spec:
                   fieldPath: spec.nodeName
           command:
             - /usr/local/bin/kured
-            - --reboot-sentinel-command=/usr/local/bin/bottlerocket-checker
-            - --reboot-command=/usr/local/bin/bottlerocket-reboot
+            - --reboot-sentinel-command=/opt/bottlerocket/bottlerocket-checker
+            - --reboot-command=/opt/bottlerocket/bottlerocket-reboot
 #            - --alert-filter-regexp=^RebootRequired$
 #            - --blocking-pod-selector=runtime=long,cost=expensive
 #            - --blocking-pod-selector=name=temperamental
@@ -133,3 +152,33 @@ spec:
 #            - --message-template-drain=Rebooting node %s
 #            - --start-time=0:00
 #            - --time-zone=UTC
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  labels:
+    type: local
+  name: bottlerocket-bin
+  namespace: kube-system
+spec:
+  accessModes:
+    - ReadWriteOnce
+  capacity:
+    storage: 2Gi
+  hostPath:
+    path: /opt/
+    type: Directory
+  storageClassName: manual
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: bottlerocket-bin
+  namespace: kube-system
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: manual
